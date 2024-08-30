@@ -17,11 +17,14 @@ type Config struct {
 	DBAddress		string;
 }
 
+// docs: global variable that holds the environment variables
 var Envs = initConfig();
 
 func initConfig() Config {
+	// docs: load the environment variables into ENV for this process.
 	godotenv.Load();
 
+	// docs: get the env on the process
 	return Config {
 		PublicHost: getEnv("PUBLIC_HOST", "http://localhost"),
 		Port: getEnv("PORT", "8080"),
@@ -32,6 +35,7 @@ func initConfig() Config {
 	}
 }
 
+// docs: get the environment variable or fallback to the default value
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
 		return value;

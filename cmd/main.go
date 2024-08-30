@@ -25,15 +25,16 @@ func main()  {
 		log.Fatal(err);
 	}
 
+	// docs: Check if the database is connected
 	initStorage(db);
 	
+	// docs: Run a new API Server
 	server := api.NewAPIServer(":8080", db);
 	if err:= server.Run(); err != nil {
 		log.Fatal(err);
 	}
 }
 
-// docs: Check if the database is connected
 func initStorage(db *sql.DB) {
 	err := db.Ping();
 	if err != nil {

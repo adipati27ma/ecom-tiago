@@ -19,10 +19,12 @@ func NewAPIServer(addr string, db *sql.DB) *APIServer {
 	return &APIServer{addr, db};
 }
 
+// docs: Run function for API Server
 func (s *APIServer) Run() error {
 	router := mux.NewRouter();
 	subrouter := router.PathPrefix("/api/v1").Subrouter();
 
+	// docs: Register the routes
 	userHandler := userServices.NewHandler();
 	userHandler.RegisterRoutes(subrouter);
 	
