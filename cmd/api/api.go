@@ -24,8 +24,9 @@ func (s *APIServer) Run() error {
 	router := mux.NewRouter();
 	subrouter := router.PathPrefix("/api/v1").Subrouter();
 
-	// docs: Register the routes
-	userHandler := userServices.NewHandler();
+	// docs: Register the routes with injected dependencies
+	userStore := userServices.NewStore(s.db);
+	userHandler := userServices.NewHandler(userStore);
 	userHandler.RegisterRoutes(subrouter);
 	
 	log.Println("Listening on", s.addr);
