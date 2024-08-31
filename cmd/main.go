@@ -5,6 +5,7 @@ import (
 	"ecom-tiago/cmd/api"
 	"ecom-tiago/config"
 	"ecom-tiago/db"
+	"fmt"
 	"log"
 
 	"github.com/go-sql-driver/mysql"
@@ -29,7 +30,7 @@ func main()  {
 	initStorage(db);
 	
 	// docs: Run a new API Server
-	server := api.NewAPIServer(":8080", db);
+	server := api.NewAPIServer(fmt.Sprintf(":%s", config.Envs.Port), db);
 	if err:= server.Run(); err != nil {
 		log.Fatal(err);
 	}
