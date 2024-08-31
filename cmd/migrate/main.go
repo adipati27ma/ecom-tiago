@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ecom-tiago/config"
+	"ecom-tiago/configs"
 	"ecom-tiago/db"
 	"log"
 	"os"
@@ -19,10 +19,10 @@ import (
 func main() {
 	// docs: load the environment variables for Database Config
 	db, err := db.NewMySQLStorage(mysqlCfg.Config{
-		User: 								config.Envs.DBUser,
-		Passwd: 							config.Envs.DBPassword,
-		Addr: 								config.Envs.DBAddress,
-		DBName: 							config.Envs.DBName,
+		User: 								configs.Envs.DBUser,
+		Passwd: 							configs.Envs.DBPassword,
+		Addr: 								configs.Envs.DBAddress,
+		DBName: 							configs.Envs.DBName,
 		Net: 									"tcp",
 		AllowNativePasswords: true,
 		ParseTime: 						true,

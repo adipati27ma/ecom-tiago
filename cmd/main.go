@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"ecom-tiago/cmd/api"
-	"ecom-tiago/config"
+	"ecom-tiago/configs"
 	"ecom-tiago/db"
 	"fmt"
 	"log"
@@ -14,10 +14,10 @@ import (
 func main()  {
 	// docs: load the environment variables for Database Config
 	db, err := db.NewMySQLStorage(mysql.Config{
-		User: 								config.Envs.DBUser,
-		Passwd: 							config.Envs.DBPassword,
-		Addr: 								config.Envs.DBAddress,
-		DBName: 							config.Envs.DBName,
+		User: 								configs.Envs.DBUser,
+		Passwd: 							configs.Envs.DBPassword,
+		Addr: 								configs.Envs.DBAddress,
+		DBName: 							configs.Envs.DBName,
 		Net: 									"tcp",
 		AllowNativePasswords: true,
 		ParseTime: 						true,
@@ -30,7 +30,7 @@ func main()  {
 	initStorage(db);
 	
 	// docs: Run a new API Server
-	server := api.NewAPIServer(fmt.Sprintf(":%s", config.Envs.Port), db);
+	server := api.NewAPIServer(fmt.Sprintf(":%s", configs.Envs.Port), db);
 	if err:= server.Run(); err != nil {
 		log.Fatal(err);
 	}
