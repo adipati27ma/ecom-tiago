@@ -51,7 +51,8 @@ func (h *Handler) handleSignup(w http.ResponseWriter, r *http.Request) {
 
 	// check if the user exists
 	_, err := h.store.GetUserByEmail(payload.Email);
-	if err != nil {
+	// docs: if no error, then the user exists
+	if err == nil {
 		utils.WriteError(w, http.StatusInternalServerError, fmt.Errorf("user with email %s already exists", payload.Email));
 		return;
 	}
