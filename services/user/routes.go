@@ -1,6 +1,7 @@
 package user
 
 import (
+	"ecom-tiago/configs"
 	"ecom-tiago/services/auth"
 	"ecom-tiago/types"
 	"ecom-tiago/utils"
@@ -58,7 +59,15 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 		return;
 	}
 
-	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Login success!", "token": "<your-token>"});
+	// docs: create JWT token
+	secret := []byte(configs.Envs.JWTSecret);
+	token, err := auth.CreateJWT([]byte(secret), u.ID);
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err);
+		return;
+	}
+
+	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Login success!", "token": token});
 }
 
 func (h *Handler) handleSignup(w http.ResponseWriter, r *http.Request) {
