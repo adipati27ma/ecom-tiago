@@ -67,11 +67,7 @@ func (s *Store) CreateUser(user types.User) error {
 	// docs: ? operator is used to prevent SQL Injection, is a placeholder, and the value is passed as a second argument
 	_, err := s.db.Exec("INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)",
 		user.FirstName, user.LastName, user.Email, user.Password)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 // docs: scanRowIntoUser is a helper function to scan the row into a User struct

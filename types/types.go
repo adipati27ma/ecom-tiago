@@ -31,6 +31,8 @@ type UserStore interface {
 
 type ProductStore interface {
 	GetProducts() ([]Product, error)
+	// GetProductByID(id int) (*Product, error)
+	CreateProduct(Product) error
 }
 
 type RegisterUserPayload struct {
@@ -44,4 +46,12 @@ type RegisterUserPayload struct {
 type LoginUserPayload struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
+}
+
+type CreateProductPayload struct {
+	Name        string  `json:"name" validate:"required"`
+	Description string  `json:"description" validate:"required"`
+	ImageURL    string  `json:"image" validate:"required"`
+	Price       float64 `json:"price" validate:"required,number"`
+	Quantity    int     `json:"quantity" validate:"required,number"`
 }

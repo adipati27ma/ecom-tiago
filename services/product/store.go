@@ -34,6 +34,13 @@ func (s *Store) GetProducts() ([]types.Product, error) {
 	return products, nil
 }
 
+func (s *Store) CreateProduct(p types.Product) error {
+	// docs: implementasi query untuk membuat produk
+	_, err := s.db.Exec("INSERT INTO products (name, description, image, price, quantity) VALUES (?, ?, ?, ?, ?)",
+		p.Name, p.Description, p.ImageURL, p.Price, p.Quantity)
+	return err
+}
+
 func scanRowsIntoProduct(rows *sql.Rows) (*types.Product, error) {
 	product := new(types.Product) // make new pointer to Product (return an alocated memory of Product)
 	err := rows.Scan(
