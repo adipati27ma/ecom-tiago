@@ -54,7 +54,7 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// docs: compare the password
-	if !auth.ComparePasswords(u.Password, payload.Password) {
+	if !auth.ComparePasswords(u.Password, []byte(payload.Password)) {
 		utils.WriteError(w, http.StatusInternalServerError, fmt.Errorf("user with email %s not found, or invalid password", payload.Email));
 		return;
 	}
