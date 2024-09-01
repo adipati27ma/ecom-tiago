@@ -20,12 +20,25 @@ func NewHandler(store types.ProductStore) *Handler {
 func (h *Handler) RegisterRoutes(router *mux.Router) {
 	// docs: implementasi routing untuk produk
 	router.HandleFunc("/products", h.handleGetProducts).Methods(http.MethodGet)
-	router.HandleFunc("/product", h.handleCreateProduct).Methods(http.MethodPost)
+	router.HandleFunc("/product/{productID}", h.handleGetProductByID).Methods(http.MethodGet)
 
+	router.HandleFunc("/product", h.handleCreateProduct).Methods(http.MethodPost)
 }
 
 func (h *Handler) handleGetProducts(w http.ResponseWriter, r *http.Request) {
 	ps, err := h.store.GetProducts()
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.WriteJSON(w, http.StatusOK, ps)
+}
+
+func (h *Handler) handleGetProductByID(w http.ResponseWriter, r *http.Request) {
+	// other way to get path/query param value ==> r.PathValue("productID")
+	placeholders := mux.Vars(r)["productID"] // get mux query param
+	ps, err := h.store.GetProductByID(placeholders)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return

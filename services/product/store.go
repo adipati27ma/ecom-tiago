@@ -3,6 +3,7 @@ package product
 import (
 	"database/sql"
 	"ecom-tiago/types"
+	"fmt"
 )
 
 type Store struct {
@@ -30,8 +31,30 @@ func (s *Store) GetProducts() ([]types.Product, error) {
 		}
 		products = append(products, *p) // dereferencing p, when want to work with the value that pointer points to
 	}
+	fmt.Println(products)
 
 	return products, nil
+}
+
+func (s *Store) GetProductByID(id string) (*types.Product, error) {
+	// docs: implementasi query untuk mendapatkan produk berdasarkan ID
+	rows, err := s.db.Query("SELECT * FROM products WHERE id = ?", id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	product := new(types.Product)
+	for rows.Next() {
+		product, err = scanRowsIntoProduct(rows)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	fmt.Println("this is ID", id)
+
+	return product, nil
 }
 
 func (s *Store) CreateProduct(p types.Product) error {
