@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	productServices "ecom-tiago/services/product"
 	userServices "ecom-tiago/services/user"
 	"log"
 	"net/http"
@@ -27,6 +28,10 @@ func (s *APIServer) Run() error {
 	userStore := userServices.NewStore(s.db)
 	userHandler := userServices.NewHandler(userStore)
 	userHandler.RegisterRoutes(subrouter)
+
+	productStore := productServices.NewStore(s.db)
+	productHandler := productServices.NewHandler(productStore)
+	productHandler.RegisterRoutes(subrouter)
 
 	log.Println("Listening on", s.addr)
 

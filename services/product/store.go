@@ -1,0 +1,53 @@
+package product
+
+import (
+	"database/sql"
+	"ecom-tiago/types"
+)
+
+type Store struct {
+	db *sql.DB
+}
+
+func NewStore(db *sql.DB) *Store {
+	return &Store{db}
+}
+
+// docs: codeium says, this is example of data access method
+func (s *Store) GetProducts() ([]types.Product, error) {
+	// docs: implementasi query untuk mendapatkan produk
+	rows, err := s.db.Query("SELECT * FROM products")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close() // menutup rows apapun yang terjadi
+
+	products := make([]types.Product, 0) // membuat slice kosong dgn size 0
+	for rows.Next() {
+		p, err := scanRowsIntoProduct(rows)
+		if err != nil {
+			return nil, err
+		}
+		products = append(products, *p) // dereferencing p, when want to work with the value that pointer points to
+	}
+
+	return products, nil
+}
+
+func scanRowsIntoProduct(rows *sql.Rows) (*types.Product, error) {
+	product := new(types.Product) // make new pointer to Product (return an alocated memory of Product)
+	err := rows.Scan(
+		&product.ID,
+		&product.Name,
+		&product.Description,
+		&product.ImageURL,
+		&product.Price,
+		&product.Quantity,
+		&product.CreatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return product, nil
+}
