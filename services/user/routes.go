@@ -29,7 +29,36 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 }
 
 func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Login success!"));
+	// w.Write([]byte("Login success!"));
+
+	// get JSON payload
+	var payload types.LoginUserPayload;
+	if err:= utils.ParseJSON(r, &payload); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err);
+		return;
+	}
+
+	// validate the payload
+	if err := utils.Validate.Struct(payload); err != nil {
+		errors := err.(validator.ValidationErrors);
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid payload %v", errors));
+		return;
+	}
+
+	// docs: get the user by email
+	u, err := h.store.GetUserByEmail(payload.Email);
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, fmt.Errorf("user with email %s not found, or invalid password", payload.Email));
+		return;
+	}
+
+	// docs: compare the password
+	if !auth.ComparePasswords(u.Password, payload.Password) {
+		utils.WriteError(w, http.StatusInternalServerError, fmt.Errorf("user with email %s not found, or invalid password", payload.Email));
+		return;
+	}
+
+	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Login success!", "token": "<your-token>"});
 }
 
 func (h *Handler) handleSignup(w http.ResponseWriter, r *http.Request) {
