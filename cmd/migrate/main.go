@@ -13,27 +13,27 @@ import (
 )
 
 /*
-	docs: for the migration, need to install the migrate V4
-	and the migrate CLI as well.
+docs: for the migration, need to install the migrate V4
+and the migrate CLI as well.
 */
 func main() {
 	// docs: load the environment variables for Database Config
 	db, err := db.NewMySQLStorage(mysqlCfg.Config{
-		User: 								configs.Envs.DBUser,
-		Passwd: 							configs.Envs.DBPassword,
-		Addr: 								configs.Envs.DBAddress,
-		DBName: 							configs.Envs.DBName,
-		Net: 									"tcp",
+		User:                 configs.Envs.DBUser,
+		Passwd:               configs.Envs.DBPassword,
+		Addr:                 configs.Envs.DBAddress,
+		DBName:               configs.Envs.DBName,
+		Net:                  "tcp",
 		AllowNativePasswords: true,
-		ParseTime: 						true,
+		ParseTime:            true,
 	})
 	if err != nil {
-		log.Fatal(err);
+		log.Fatal(err)
 	}
 
 	driver, err := mysql.WithInstance(db, &mysql.Config{})
 	if err != nil {
-		log.Fatal(err);
+		log.Fatal(err)
 	}
 
 	m, err := migrate.NewWithDatabaseInstance(
@@ -42,19 +42,19 @@ func main() {
 		driver,
 	)
 	if err != nil {
-		log.Fatal(err);
+		log.Fatal(err)
 	}
 
-	cmd := os.Args[(len(os.Args) - 1)];
+	cmd := os.Args[(len(os.Args) - 1)]
 	if cmd == "up" {
 		if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-			log.Fatal(err);
+			log.Fatal(err)
 		}
 	} else if cmd == "down" {
 		if err := m.Down(); err != nil && err != migrate.ErrNoChange {
-			log.Fatal(err);
+			log.Fatal(err)
 		}
 	} else {
-		log.Fatal("Invalid command");
+		log.Fatal("Invalid command")
 	}
 }

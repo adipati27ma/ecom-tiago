@@ -13,8 +13,8 @@ import (
 )
 
 func TestUserServicesHandlers(t *testing.T) {
-	userStore := &mockUserStore{};
-	handler := NewHandler(userStore);
+	userStore := &mockUserStore{}
+	handler := NewHandler(userStore)
 
 	t.Run("Should fail if the user payload is invalid", func(t *testing.T) {
 		payload := types.RegisterUserPayload{
@@ -22,27 +22,27 @@ func TestUserServicesHandlers(t *testing.T) {
 			LastName:  "Lopez",
 			Email:     "invalid",
 			Password:  "password",
-		};
+		}
 		// docs: Marshal returns the JSON encoding of the arguments.
-		marshalled, _ := json.Marshal(payload);
-		
-		req, err := http.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(marshalled));
+		marshalled, _ := json.Marshal(payload)
+
+		req, err := http.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(marshalled))
 		if err != nil {
-			t.Fatal(err);
+			t.Fatal(err)
 		}
 
 		// docs: returns a new ResponseRecorder.
-		rr := httptest.NewRecorder();
-		router := mux.NewRouter();
+		rr := httptest.NewRecorder()
+		router := mux.NewRouter()
 
-		router.HandleFunc("/signup", handler.handleSignup);
+		router.HandleFunc("/signup", handler.handleSignup)
 		// make the request
-		router.ServeHTTP(rr, req);
+		router.ServeHTTP(rr, req)
 
 		if rr.Code != http.StatusBadRequest {
-			t.Errorf("expected status code %d, got %d", http.StatusBadRequest, rr.Code);
+			t.Errorf("expected status code %d, got %d", http.StatusBadRequest, rr.Code)
 		}
-	});
+	})
 
 	t.Run("Should correctly register the user", func(t *testing.T) {
 		payload := types.RegisterUserPayload{
@@ -50,39 +50,39 @@ func TestUserServicesHandlers(t *testing.T) {
 			LastName:  "Lopes",
 			Email:     "valid@gmail.com",
 			Password:  "password",
-		};
+		}
 		// docs: Marshal returns the JSON encoding of the arguments.
-		marshalled, _ := json.Marshal(payload);
-		
-		req, err := http.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(marshalled));
+		marshalled, _ := json.Marshal(payload)
+
+		req, err := http.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(marshalled))
 		if err != nil {
-			t.Fatal(err);
+			t.Fatal(err)
 		}
 
 		// docs: returns a new ResponseRecorder.
-		rr := httptest.NewRecorder();
-		router := mux.NewRouter();
+		rr := httptest.NewRecorder()
+		router := mux.NewRouter()
 
-		router.HandleFunc("/signup", handler.handleSignup);
+		router.HandleFunc("/signup", handler.handleSignup)
 		// make the request
-		router.ServeHTTP(rr, req);
+		router.ServeHTTP(rr, req)
 
 		if rr.Code != http.StatusCreated {
-			t.Errorf("expected status code %d, got %d", http.StatusCreated, rr.Code);
+			t.Errorf("expected status code %d, got %d", http.StatusCreated, rr.Code)
 		}
-	});
+	})
 }
 
-type mockUserStore struct {}
+type mockUserStore struct{}
 
 func (m *mockUserStore) GetUserByEmail(email string) (*types.User, error) {
-	return nil, fmt.Errorf("user not found");
+	return nil, fmt.Errorf("user not found")
 }
 
 func (m *mockUserStore) GetUserByID(id int) (*types.User, error) {
-	return nil, nil;
+	return nil, nil
 }
 
 func (m *mockUserStore) CreateUser(user types.User) error {
-	return nil;
+	return nil
 }

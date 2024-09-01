@@ -9,11 +9,11 @@ import (
 
 // docs: NewMySQLStorage creates a new MySQL connection
 func NewMySQLStorage(cfg mysql.Config) (*sql.DB, error) {
-	db, err := sql.Open("mysql", cfg.FormatDSN());
+	db, err := sql.Open("mysql", cfg.FormatDSN())
 	if err != nil {
-		log.Fatal(err);
-		return nil, err;
+		log.Fatal(err)
+		return nil, err
 	}
 
-	return db, nil;
+	return db, nil
 }
