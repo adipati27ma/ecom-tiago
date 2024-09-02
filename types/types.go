@@ -22,6 +22,24 @@ type Product struct {
 	CreatedAt   time.Time `json:"createdAt"`
 }
 
+type Order struct {
+	ID        int       `json:"id"`
+	UserID    int       `json:"userId"`
+	Total     float64   `json:"total"`
+	Status    string    `json:"status"`
+	Address   string    `json:"address"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+type OrderItem struct {
+	ID        int       `json:"id"`
+	OrderID   int       `json:"orderId"`
+	ProductID int       `json:"productId"`
+	Quantity  int       `json:"quantity"`
+	Price     float64   `json:"price"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
 // docs: gunakan interface agar lebih mudah dalam pengujian/pengetesan
 type UserStore interface {
 	GetUserByEmail(email string) (*User, error)
@@ -32,7 +50,15 @@ type UserStore interface {
 type ProductStore interface {
 	GetProducts() ([]Product, error)
 	GetProductByID(id string) (*Product, error)
+	GetProductsByIDs(ids []string) ([]Product, error)
 	CreateProduct(Product) error
+	UpdateProduct(Product) error
+}
+
+type OrderStore interface {
+	// GetCartByUserID(userID int) ([]Cart, error)
+	CreateOrder(Order) (int, error)
+	CreateOrderItem(OrderItem) error
 }
 
 type RegisterUserPayload struct {
@@ -54,4 +80,13 @@ type CreateProductPayload struct {
 	ImageURL    string  `json:"image" validate:"required"`
 	Price       float64 `json:"price" validate:"required,number"`
 	Quantity    int     `json:"quantity" validate:"required,number"`
+}
+
+type CartItem struct {
+	ProductID int `json:"productId"`
+	Quantity  int `json:"quantity"`
+}
+
+type CartCheckoutPayload struct {
+	Items []CartItem `json:"items" validate:"required"`
 }

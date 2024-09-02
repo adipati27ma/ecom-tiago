@@ -10,7 +10,7 @@ import (
 
 var Validate = validator.New()
 
-func ParseJSON(r *http.Request, payload any) error {
+func ParseJSONRes(r *http.Request, payload any) error {
 	if r.Body == nil {
 		return fmt.Errorf("request body is empty")
 	}

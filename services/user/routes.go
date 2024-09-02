@@ -34,7 +34,7 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 
 	// get JSON payload
 	var payload types.LoginUserPayload
-	if err := utils.ParseJSON(r, &payload); err != nil {
+	if err := utils.ParseJSONRes(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
@@ -75,7 +75,7 @@ func (h *Handler) handleSignup(w http.ResponseWriter, r *http.Request) {
 
 	// get JSON payload
 	var payload types.RegisterUserPayload
-	if err := utils.ParseJSON(r, &payload); err != nil {
+	if err := utils.ParseJSONRes(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}

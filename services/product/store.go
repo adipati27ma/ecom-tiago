@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"ecom-tiago/types"
 	"fmt"
+	"strings"
 )
 
 type Store struct {
@@ -36,6 +37,45 @@ func (s *Store) GetProducts() ([]types.Product, error) {
 	return products, nil
 }
 
+func (s *Store) GetProductsByIDs(ids []string) ([]types.Product, error) {
+	placeholders := strings.Repeat(",?", len(ids)-1)
+	query := fmt.Sprintf("SELECT * FROM products WHERE id IN (?%s)", placeholders)
+	fmt.Println("ids placeholders", placeholders)
+
+	// docs: Convert ids to []interface{}
+	args := make([]interface{}, len(ids))
+	for i, id := range ids {
+		args[i] = id
+	}
+
+	rows, err := s.db.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	products := make([]types.Product, 0)
+	for rows.Next() {
+		p, err := scanRowsIntoProduct(rows)
+		if err != nil {
+			return nil, err
+		}
+		products = append(products, *p)
+	}
+	return products, nil
+
+	// docs: bisa langsung dengan kode berikut,
+	// tapi query-nya akan banyak dan berkali-kali (berat, performance issue)
+	// products := make([]types.Product, 0)
+	// for _, id := range ids {
+	// 	product, err := s.GetProductByID(id)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	products = append(products, *product)
+	// }
+	// return products, nil
+}
+
 func (s *Store) GetProductByID(id string) (*types.Product, error) {
 	// docs: implementasi query untuk mendapatkan produk berdasarkan ID
 	rows, err := s.db.Query("SELECT * FROM products WHERE id = ?", id)
@@ -61,6 +101,13 @@ func (s *Store) CreateProduct(p types.Product) error {
 	// docs: implementasi query untuk membuat produk
 	_, err := s.db.Exec("INSERT INTO products (name, description, image, price, quantity) VALUES (?, ?, ?, ?, ?)",
 		p.Name, p.Description, p.ImageURL, p.Price, p.Quantity)
+	return err
+}
+
+func (s *Store) UpdateProduct(p types.Product) error {
+	_, err := s.db.Exec(`UPDATE products SET name = ?, description = ?,
+	image = ?, price = ?, quantity = ? WHERE id = ?`,
+		p.Name, p.Description, p.ImageURL, p.Price, p.Quantity, p.ID)
 	return err
 }
 
